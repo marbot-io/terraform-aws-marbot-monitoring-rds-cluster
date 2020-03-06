@@ -9,12 +9,6 @@ variable "enabled" {
   default     = true
 }
 
-variable "stage" {
-  type        = string
-  description = "marbot stage (never change this!)."
-  default     = "v1"
-}
-
 variable "db_cluster_identifier" {
   type        = string
   description = "The cluster identifier of the RDS Aurora cluster that you want to monitor."
@@ -36,4 +30,10 @@ variable "freeable_memory_threshold" {
   type        = number
   description = "The minimum amount of available random access memory in Byte."
   default     = 64000000 # 64 Megabyte in Byte
+}
+
+variable "stage" {
+  type        = string
+  description = "marbot stage (never change this!)."
+  default     = "v1"
 }
