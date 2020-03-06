@@ -110,6 +110,7 @@ resource "aws_cloudwatch_event_target" "monitoring_jump_start" {
   "Region": "${data.aws_region.current.name}"
 }
 JSON
+}
 
 ##########################################################################
 #                                                                        #
@@ -138,10 +139,10 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   threshold           = var.cpu_utilization_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
-  dimensions = {
+  dimensions          = {
     DBClusterIdentifier = var.db_cluster_identifier
   }
-  treat_missing_data = "notBreaching"
+  treat_missing_data  = "notBreaching"
 }
 
 
@@ -161,10 +162,10 @@ resource "aws_cloudwatch_metric_alarm" "cpu_credit_balance" {
   threshold           = var.cpu_credit_balance_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
-  dimensions = {
+  dimensions          = {
     DBClusterIdentifier = var.db_cluster_identifier
   }
-  treat_missing_data = "notBreaching"
+  treat_missing_data  = "notBreaching"
 }
 
 
@@ -184,10 +185,10 @@ resource "aws_cloudwatch_metric_alarm" "freeable_memory" {
   threshold           = var.freeable_memory_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
-  dimensions = {
+  dimensions          = {
     DBClusterIdentifier = var.db_cluster_identifier
   }
-  treat_missing_data = "notBreaching"
+  treat_missing_data  = "notBreaching"
 }
 
 ##########################################################################
