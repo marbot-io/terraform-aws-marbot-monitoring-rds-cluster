@@ -1,6 +1,6 @@
 # RDS cluster monitoring
 
-Connects you to RDS Event Notifications of a particular RDS cluster and adds alarms for CPU and memory.
+Connects you to RDS Event Notifications of a particular RDS cluster, adds alarms for CPU and memory, and forwards them to Slack managed by [marbot](https://marbot.io/).
 
 ## Usage
 
@@ -9,8 +9,9 @@ Connects you to RDS Event Notifications of a particular RDS cluster and adds ala
 ```
 provider "aws" {}
 
-module "basic" {
-  source                = "git::https://github.com/marbot-io/terraform-aws-marbot-monitoring-rds-cluster"
+module "marbot-monitoring-rds-cluster" {
+  source   = "marbot-io/marbot-monitoring-rds-cluster/aws"
+  #version = "x.y.z"
 
   endpoint_id           = "" # to get this value: select a Slack channel where marbot belongs to and send a message like this: "@marbot show me my endpoint id"
   db_cluster_identifier = "" # the cluster identifier
