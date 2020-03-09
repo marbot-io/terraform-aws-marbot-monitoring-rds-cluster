@@ -18,6 +18,8 @@ data "aws_region" "current" {}
 
 resource "aws_sns_topic" "marbot" {
   count = var.enabled ? 1 : 0
+
+  tags = var.tags
 }
 
 resource "aws_sns_topic_policy" "marbot" {
@@ -94,6 +96,7 @@ resource "aws_cloudwatch_event_rule" "monitoring_jump_start" {
 
   description         = "Monitoring Jump Start connection (created by marbot)"
   schedule_expression = "rate(30 days)"
+  tags                = var.tags
 }
 
 resource "aws_cloudwatch_event_target" "monitoring_jump_start" {
@@ -106,7 +109,7 @@ resource "aws_cloudwatch_event_target" "monitoring_jump_start" {
 {
   "Type": "monitoring-jump-start-tf-connection",
   "Module": "rds-cluster",
-  "Version": "0.1.0",
+  "Version": "0.2.0",
   "Partition": "${data.aws_partition.current.partition}",
   "AccountId": "${data.aws_caller_identity.current.account_id}",
   "Region": "${data.aws_region.current.name}"
@@ -145,6 +148,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
     DBClusterIdentifier = var.db_cluster_identifier
   }
   treat_missing_data  = "notBreaching"
+  tags                = var.tags
 }
 
 
@@ -168,6 +172,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_credit_balance" {
     DBClusterIdentifier = var.db_cluster_identifier
   }
   treat_missing_data  = "notBreaching"
+  tags                = var.tags
 }
 
 
@@ -191,6 +196,7 @@ resource "aws_cloudwatch_metric_alarm" "freeable_memory" {
     DBClusterIdentifier = var.db_cluster_identifier
   }
   treat_missing_data  = "notBreaching"
+  tags                = var.tags
 }
 
 ##########################################################################
@@ -206,4 +212,5 @@ resource "aws_db_event_subscription" "rds_cluster_issue" {
   sns_topic   = join("", aws_sns_topic.marbot.*.arn)
   source_type = "db-cluster"
   source_ids  = [var.db_cluster_identifier]
+  tags        = var.tags
 }

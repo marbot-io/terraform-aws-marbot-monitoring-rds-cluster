@@ -9,6 +9,12 @@ variable "enabled" {
   default     = true
 }
 
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
+}
+
 variable "db_cluster_identifier" {
   type        = string
   description = "The cluster identifier of the RDS Aurora cluster that you want to monitor."
