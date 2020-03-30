@@ -26,6 +26,12 @@ variable "cpu_utilization_threshold" {
   default     = 80
 }
 
+variable "burst_monitoring_enabled" {
+  type        = bool
+  description = "Enable if you use t2 or t3 instances"
+  default     = true
+}
+
 variable "cpu_credit_balance_threshold" {
   type        = number
   description = "The minimum number of CPU credits (t2 instances only) available."

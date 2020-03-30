@@ -155,7 +155,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
 
 resource "aws_cloudwatch_metric_alarm" "cpu_credit_balance" {
   depends_on = [aws_sns_topic_subscription.marbot]
-  count      = var.enabled ? 1 : 0
+  count      = (var.burst_monitoring_enabled && var.enabled) ? 1 : 0
 
   alarm_name          = "marbot-cpu-credit-balance-${random_id.id8.hex}"
   alarm_description   = "Average database CPU credit balance over last 10 minutes too low, expect a significant performance drop soon (created by marbot)."
