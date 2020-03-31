@@ -1,6 +1,6 @@
 # RDS cluster monitoring
 
-Connects you to RDS Event Notifications of a particular RDS cluster, adds alarms for CPU and memory, and forwards them to Slack managed by [marbot](https://marbot.io/).
+Connects you to RDS Event Notifications of a particular RDS cluster, adds alarms to monitor CPU and memory, and forwards them to Slack managed by [marbot](https://marbot.io/).
 
 ## Usage
 
