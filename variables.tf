@@ -22,25 +22,25 @@ variable "db_cluster_identifier" {
 
 variable "cpu_utilization_threshold" {
   type        = number
-  description = "The maximum percentage of CPU utilization."
+  description = "The maximum percentage of CPU utilization (set to -1 to disable)."
   default     = 80
 }
 
 variable "burst_monitoring_enabled" {
   type        = bool
-  description = "Enable if you use t2 or t3 instances"
+  description = "Deprecated, set variable cpu_credit_balance_threshold to -1 instead"
   default     = true
 }
 
 variable "cpu_credit_balance_threshold" {
   type        = number
-  description = "The minimum number of CPU credits (t2 instances only) available."
+  description = "The minimum number of CPU credits available (t* instances only; set to -1 to disable)."
   default     = 20
 }
 
 variable "freeable_memory_threshold" {
   type        = number
-  description = "The minimum amount of available random access memory in Byte."
+  description = "The minimum amount of available random access memory in Byte (set to -1 to disable)."
   default     = 64000000 # 64 Megabyte in Byte
 }
 
