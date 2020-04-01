@@ -92,26 +92,27 @@ JSON
 
 
 
-resource "aws_cloudwatch_event_rule" "monitoring_jump_start" {
+resource "aws_cloudwatch_event_rule" "monitoring_jump_start_connection" {
   depends_on = [aws_sns_topic_subscription.marbot]
   count      = var.enabled ? 1 : 0
 
+  name                = "marbot-rds-cluster-connection-${random_id.id8.hex}"
   description         = "Monitoring Jump Start connection. (created by marbot)"
   schedule_expression = "rate(30 days)"
   tags                = var.tags
 }
 
-resource "aws_cloudwatch_event_target" "monitoring_jump_start" {
+resource "aws_cloudwatch_event_target" "monitoring_jump_start_connection" {
   count = var.enabled ? 1 : 0
 
-  rule      = join("", aws_cloudwatch_event_rule.monitoring_jump_start.*.name)
+  rule      = join("", aws_cloudwatch_event_rule.monitoring_jump_start_connection.*.name)
   target_id = "marbot"
   arn       = join("", aws_sns_topic.marbot.*.arn)
   input     = <<JSON
 {
   "Type": "monitoring-jump-start-tf-connection",
   "Module": "rds-cluster",
-  "Version": "0.4.0",
+  "Version": "0.5.0",
   "Partition": "${data.aws_partition.current.partition}",
   "AccountId": "${data.aws_caller_identity.current.account_id}",
   "Region": "${data.aws_region.current.name}"
@@ -135,7 +136,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   depends_on = [aws_sns_topic_subscription.marbot]
   count      = (var.cpu_utilization_threshold >= 0 && var.enabled) ? 1 : 0
 
-  alarm_name          = "marbot-cpu-utilization-${random_id.id8.hex}"
+  alarm_name          = "marbot-rds-cluster-cpu-utilization-${random_id.id8.hex}"
   alarm_description   = "Average database CPU utilization over last 10 minutes too high. (created by marbot)"
   namespace           = "AWS/RDS"
   metric_name         = "CPUUtilization"
@@ -159,7 +160,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_credit_balance" {
   depends_on = [aws_sns_topic_subscription.marbot]
   count      = (var.cpu_credit_balance_threshold >= 0 && var.burst_monitoring_enabled && var.enabled) ? 1 : 0
 
-  alarm_name          = "marbot-cpu-credit-balance-${random_id.id8.hex}"
+  alarm_name          = "marbot-rds-cluster-cpu-credit-balance-${random_id.id8.hex}"
   alarm_description   = "Average database CPU credit balance over last 10 minutes too low, expect a significant performance drop soon. (created by marbot)"
   namespace           = "AWS/RDS"
   metric_name         = "CPUCreditBalance"
@@ -183,7 +184,7 @@ resource "aws_cloudwatch_metric_alarm" "freeable_memory" {
   depends_on = [aws_sns_topic_subscription.marbot]
   count      = (var.freeable_memory_threshold >= 0 && var.enabled) ? 1 : 0
 
-  alarm_name          = "marbot-freeable-memory-${random_id.id8.hex}"
+  alarm_name          = "marbot-rds-cluster-freeable-memory-${random_id.id8.hex}"
   alarm_description   = "Average database freeable memory over last 10 minutes too low, performance may suffer. (created by marbot)"
   namespace           = "AWS/RDS"
   metric_name         = "FreeableMemory"
