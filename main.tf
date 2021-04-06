@@ -12,6 +12,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+locals {
+  rds_instance = element(split(".", module.rds-host.string), 0)
+}
+
 ##########################################################################
 #                                                                        #
 #                                 TOPIC                                  #
@@ -91,8 +95,6 @@ resource "aws_sns_topic_subscription" "marbot" {
 JSON
 }
 
-
-
 resource "aws_cloudwatch_event_rule" "monitoring_jump_start_connection" {
   depends_on = [aws_sns_topic_subscription.marbot]
   count      = var.enabled ? 1 : 0
@@ -131,8 +133,6 @@ resource "random_id" "id8" {
   byte_length = 8
 }
 
-
-
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   depends_on = [aws_sns_topic_subscription.marbot]
   count      = (var.cpu_utilization_threshold >= 0 && var.enabled) ? 1 : 0
@@ -148,11 +148,9 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   threshold           = var.cpu_utilization_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
-  dimensions = {
-    DBClusterIdentifier = var.db_cluster_identifier
-  }
-  treat_missing_data = "notBreaching"
-  tags               = var.tags
+  dimensions          = local.db-type["db-instance"]
+  treat_missing_data  = var.treat_missing_data
+  tags                = var.tags
 }
 
 
@@ -172,14 +170,30 @@ resource "aws_cloudwatch_metric_alarm" "cpu_credit_balance" {
   threshold           = var.cpu_credit_balance_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
-  dimensions = {
-    DBClusterIdentifier = var.db_cluster_identifier
-  }
-  treat_missing_data = "notBreaching"
-  tags               = var.tags
+  dimensions          = local.db-type["db-instance"]
+  treat_missing_data  = var.treat_missing_data
+  tags                = var.tags
 }
 
+resource "aws_cloudwatch_metric_alarm" "free_storage_space" {
+  depends_on = [aws_sns_topic_subscription.marbot]
+  count      = (var.free_storage_space_threshold >= 0 && var.enabled) ? 1 : 0
 
+  alarm_name          = "marbot-rds-cluster-free_storage_space-${random_id.id8.hex}"
+  alarm_description   = "Average database free storage space over last 10 minutes too low, should be investigated as a priority. (created by marbot)"
+  namespace           = "AWS/RDS"
+  metric_name         = "FreeStorageSpace"
+  statistic           = "Average"
+  period              = 600
+  evaluation_periods  = 1
+  comparison_operator = "LessThanThreshold"
+  threshold           = var.free_storage_space_threshold
+  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
+  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  dimensions          = local.db-type["db-instance"]
+  treat_missing_data  = var.treat_missing_data
+  tags                = var.tags
+}
 
 resource "aws_cloudwatch_metric_alarm" "freeable_memory" {
   depends_on = [aws_sns_topic_subscription.marbot]
@@ -196,11 +210,9 @@ resource "aws_cloudwatch_metric_alarm" "freeable_memory" {
   threshold           = var.freeable_memory_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
-  dimensions = {
-    DBClusterIdentifier = var.db_cluster_identifier
-  }
-  treat_missing_data = "notBreaching"
-  tags               = var.tags
+  dimensions          = local.db-type["db-instance"]
+  treat_missing_data  = var.treat_missing_data
+  tags                = var.tags
 }
 
 ##########################################################################
@@ -214,7 +226,7 @@ resource "aws_db_event_subscription" "rds_cluster_issue" {
   count      = var.enabled ? 1 : 0
 
   sns_topic   = join("", aws_sns_topic.marbot.*.arn)
-  source_type = "db-cluster"
+  source_type = var.deployment-type
   source_ids  = [var.db_cluster_identifier]
   tags        = var.tags
 }

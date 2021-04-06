@@ -49,3 +49,20 @@ variable "stage" {
   description = "marbot stage (never change this!)."
   default     = "v1"
 }
+
+variable "deployment-type" {
+  type        = string
+  description = "Specify whether this is an db-cluster or an db-instance"
+  default     = "db-cluster"
+}
+
+locals {
+  db-type = {
+    db-cluster = {
+      DBClusterIdentifier = var.db_cluster_identifier
+    },
+    db-instance = {
+      DBInstanceIdentifier = var.db_cluster_identifier
+    }
+  }
+} 
