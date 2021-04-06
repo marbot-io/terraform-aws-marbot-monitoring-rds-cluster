@@ -44,6 +44,14 @@ variable "freeable_memory_threshold" {
   default     = 64000000 # 64 Megabyte in Byte
 }
 
+variable "treat_missing_data" {
+  default = "notBreaching"
+}
+
+variable "free_storage_space_threshold" {
+  type        = number
+}
+
 variable "stage" {
   type        = string
   description = "marbot stage (never change this!)."
