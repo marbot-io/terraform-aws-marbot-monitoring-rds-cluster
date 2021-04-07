@@ -12,10 +12,6 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
-locals {
-  rds_instance = element(split(".", module.rds-host.string), 0)
-}
-
 ##########################################################################
 #                                                                        #
 #                                 TOPIC                                  #
