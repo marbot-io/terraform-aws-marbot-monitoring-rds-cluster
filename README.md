@@ -1,4 +1,4 @@
-# Marbot - Create CloudWatch alarms and Receive Alerts on Slack
+# Marbot - Made AWS RDS Monitoring and Alerting easy!
 
 Connects you to RDS Event Notifications of a particular RDS cluster or Instance, adds alarms to monitor CPU, CPU Credit Balance and Memory, and forwards them to Slack or Microsoft Teams managed by [marbot](https://marbot.io/).
 
