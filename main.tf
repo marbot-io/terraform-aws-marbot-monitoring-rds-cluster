@@ -77,6 +77,60 @@ resource "aws_cloudwatch_metric_alarm" "cluster_freeable_memory" {
   tags               = var.tags
 }
 
+#! ---  New ALARMS
+
+resource "aws_cloudwatch_metric_alarm" "cluster_read_latency" {
+  depends_on = [aws_sns_topic_subscription.marbot]
+  count      = var.enabled ? length(var.db_clusters_identifier_list) : 0
+
+  alarm_name          = "marbot-${element(var.db_instances_identifier_list, count.index)}-rds-cluster-read-latency"
+  alarm_description   = "The read latency is too high (created by marbot)"
+  namespace           = "AWS/RDS"
+  metric_name         = "ReadLatency"
+  statistic           = "Average"
+  period              = 600
+  evaluation_periods  = 1
+  comparison_operator = "LessThanThreshold"
+  threshold           = var.read_latency_threshold
+  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
+  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  dimensions = {
+    DBClusterIdentifier = element(var.db_clusters_identifier_list, count.index)
+  }
+  treat_missing_data = "notBreaching"
+  tags               = var.tags
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "cluster_write_latency" {
+  depends_on = [aws_sns_topic_subscription.marbot]
+  count      = var.enabled ? length(var.db_clusters_identifier_list) : 0
+
+  alarm_name          = "marbot-${element(var.db_instances_identifier_list, count.index)}-rds-cluster-write-latency"
+  alarm_description   = "The write latency is too high (created by marbot)"
+  namespace           = "AWS/RDS"
+  metric_name         = "WriteLatency"
+  statistic           = "Average"
+  period              = 600
+  evaluation_periods  = 1
+  comparison_operator = "LessThanThreshold"
+  threshold           = var.write_latency_threshold
+  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
+  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  dimensions = {
+    DBClusterIdentifier = element(var.db_clusters_identifier_list, count.index)
+  }
+  treat_missing_data = "notBreaching"
+  tags               = var.tags
+}
+
+
+
+
+
+
+
+
 
 ###! Alarms for standalone DB instances
 resource "aws_cloudwatch_metric_alarm" "instances_cpu_utilization" {
@@ -148,3 +202,49 @@ resource "aws_cloudwatch_metric_alarm" "instance_freeable_memory" {
   tags               = var.tags
 }
 
+#! ---  New ALARMS - Instances
+
+resource "aws_cloudwatch_metric_alarm" "instance_read_latency" {
+  depends_on = [aws_sns_topic_subscription.marbot]
+  count      = var.enabled ? length(var.db_instances_identifier_list) : 0
+
+  alarm_name          = "marbot-${element(var.db_instances_identifier_list, count.index)}-rds-instance-read-latency"
+  alarm_description   = "The read latency is too high (created by marbot)"
+  namespace           = "AWS/RDS"
+  metric_name         = "ReadLatency"
+  statistic           = "Average"
+  period              = 600
+  evaluation_periods  = 1
+  comparison_operator = "LessThanThreshold"
+  threshold           = var.read_latency_threshold
+  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
+  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  dimensions = {
+    DBinstanceIdentifier = element(var.db_instances_identifier_list, count.index)
+  }
+  treat_missing_data = "notBreaching"
+  tags               = var.tags
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "instance_write_latency" {
+  depends_on = [aws_sns_topic_subscription.marbot]
+  count      = var.enabled ? length(var.db_instances_identifier_list) : 0
+
+  alarm_name          = "marbot-${element(var.db_instances_identifier_list, count.index)}-rds-instance-write-latency"
+  alarm_description   = "The write latency is too high (created by marbot)"
+  namespace           = "AWS/RDS"
+  metric_name         = "WriteLatency"
+  statistic           = "Average"
+  period              = 600
+  evaluation_periods  = 1
+  comparison_operator = "LessThanThreshold"
+  threshold           = var.write_latency_threshold
+  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
+  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  dimensions = {
+    DBinstanceIdentifier = element(var.db_instances_identifier_list, count.index)
+  }
+  treat_missing_data = "notBreaching"
+  tags               = var.tags
+}

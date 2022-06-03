@@ -1,24 +1,33 @@
+#! Important Input Variables
 variable "endpoint_id" {
   type        = string
   description = "Your marbot endpoint ID (to get this value: select a channel where marbot belongs to and send a message like this: \"@marbot show me my endpoint id\")."
 }
 
+variable "db_clusters_identifier_list" {
+  type        = list(string)
+  description = "The clusters that you want to monitor."
+}
+
+variable "db_instances_identifier_list" {
+  type        = list(string)
+  description = "The instances that you want to monitor."
+}
+
+#! Module related vars
 variable "enabled" {
   type        = bool
   description = "Turn the module on or off"
   default     = true
 }
 
-variable "tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default     = {}
+variable "stage" {
+  type        = string
+  description = "marbot stage (never change this!)."
+  default     = "v1"
 }
 
-# variable "db_cluster_identifier" {
-#   type        = string
-#   description = "The cluster identifier of the RDS Aurora cluster that you want to monitor."
-# }
+#! Threshold values for CloudWatch Alarms
 
 variable "cpu_utilization_threshold" {
   type        = number
@@ -26,6 +35,7 @@ variable "cpu_utilization_threshold" {
   default     = 80
 }
 
+#? Maybe in future, we may think to remove this variable
 variable "burst_monitoring_enabled" {
   type        = bool
   description = "Deprecated, set variable cpu_credit_balance_threshold to -1 instead"
@@ -44,18 +54,22 @@ variable "freeable_memory_threshold" {
   default     = 64000000 # 64 Megabyte in Byte
 }
 
-variable "stage" {
-  type        = string
-  description = "marbot stage (never change this!)."
-  default     = "v1"
+variable "read_latency_threshold" {
+  type        = number
+  description = "The maximum amount of latency to allow for data read"
+  default     = 0.05 # 50 ms in seconds
 }
 
-variable "db_clusters_identifier_list" {
-  type        = list(string)
-  description = "The clusters that you want to monitor."
+variable "write_latency_threshold" {
+  type        = number
+  description = "The maximum amount of latency to allow for data write"
+  default     = 0.05 # 50 ms in seconds
 }
 
-variable "db_instances_identifier_list" {
-  type        = list(string)
-  description = "The instances that you want to monitor."
+
+#! Extra
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
 }
