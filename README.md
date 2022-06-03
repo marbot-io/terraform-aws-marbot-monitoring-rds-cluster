@@ -29,8 +29,3 @@ All modules are published under Apache License Version 2.0.
 ## About
 
 A [marbot.io](https://marbot.io/) project. Engineered by [widdix](https://widdix.net).
-
-## Additional Resources
-
-- https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.Messages.html
--
