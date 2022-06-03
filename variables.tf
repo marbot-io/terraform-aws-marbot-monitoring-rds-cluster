@@ -15,10 +15,10 @@ variable "tags" {
   default     = {}
 }
 
-variable "db_cluster_identifier" {
-  type        = string
-  description = "The cluster identifier of the RDS Aurora cluster that you want to monitor."
-}
+# variable "db_cluster_identifier" {
+#   type        = string
+#   description = "The cluster identifier of the RDS Aurora cluster that you want to monitor."
+# }
 
 variable "cpu_utilization_threshold" {
   type        = number
@@ -49,3 +49,13 @@ variable "stage" {
   description = "marbot stage (never change this!)."
   default     = "v1"
 }
+
+variable "db_clusters_identifier_list" {
+  type        = list(string)
+  description = "The clusters that you want to monitor."
+}
+
+# variable "db_instances_identifier_list" {
+#   type        = list(string)
+#   description = "The instances that you want to monitor."
+# }
