@@ -55,7 +55,7 @@ variable "db_clusters_identifier_list" {
   description = "The clusters that you want to monitor."
 }
 
-# variable "db_instances_identifier_list" {
-#   type        = list(string)
-#   description = "The instances that you want to monitor."
-# }
+variable "db_instances_identifier_list" {
+  type        = list(string)
+  description = "The instances that you want to monitor."
+}
