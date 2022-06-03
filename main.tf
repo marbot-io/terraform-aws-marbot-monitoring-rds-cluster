@@ -90,7 +90,7 @@ resource "aws_cloudwatch_metric_alarm" "cluster_read_latency" {
   statistic           = "Average"
   period              = 600
   evaluation_periods  = 1
-  comparison_operator = "LessThanThreshold"
+  comparison_operator = "GreaterThanThreshold"
   threshold           = var.read_latency_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
@@ -113,7 +113,7 @@ resource "aws_cloudwatch_metric_alarm" "cluster_write_latency" {
   statistic           = "Average"
   period              = 600
   evaluation_periods  = 1
-  comparison_operator = "LessThanThreshold"
+  comparison_operator = "GreaterThanThreshold"
   threshold           = var.write_latency_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
@@ -215,7 +215,7 @@ resource "aws_cloudwatch_metric_alarm" "instance_read_latency" {
   statistic           = "Average"
   period              = 600
   evaluation_periods  = 1
-  comparison_operator = "LessThanThreshold"
+  comparison_operator = "GreaterThanThreshold"
   threshold           = var.read_latency_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
@@ -238,7 +238,7 @@ resource "aws_cloudwatch_metric_alarm" "instance_write_latency" {
   statistic           = "Average"
   period              = 600
   evaluation_periods  = 1
-  comparison_operator = "LessThanThreshold"
+  comparison_operator = "GreaterThanThreshold"
   threshold           = var.write_latency_threshold
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
