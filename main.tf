@@ -248,3 +248,25 @@ resource "aws_cloudwatch_metric_alarm" "instance_write_latency" {
   treat_missing_data = "notBreaching"
   tags               = var.tags
 }
+
+resource "aws_cloudwatch_metric_alarm" "instance_available_storage" {
+  depends_on = [aws_sns_topic_subscription.marbot]
+  count      = var.enabled ? length(var.db_instances_identifier_list) : 0
+
+  alarm_name          = "marbot-${element(var.db_instances_identifier_list, count.index)}-rds-instance-available-storage"
+  alarm_description   = "Average database storage is less than 10 GBs over last 10 minutes, Check your instance (created by marbot)"
+  namespace           = "AWS/RDS"
+  metric_name         = "FreeStorageSpace"
+  statistic           = "Average"
+  period              = 600
+  evaluation_periods  = 1
+  comparison_operator = "LessThanThreshold"
+  threshold           = var.available_storage_threshold
+  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
+  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  dimensions = {
+    DBInstanceIdentifier = element(var.db_instances_identifier_list, count.index)
+  }
+  treat_missing_data = "notBreaching"
+  tags               = var.tags
+}

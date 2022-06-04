@@ -66,6 +66,11 @@ variable "write_latency_threshold" {
   default     = 0.05 # 50 ms in seconds
 }
 
+variable "available_storage_threshold" {
+  type        = number
+  description = "The minimum amount of available storage in Byte."
+  default     = 10000000000 # 64 Megabyte in Byte
+}
 
 #! Extra
 variable "tags" {
