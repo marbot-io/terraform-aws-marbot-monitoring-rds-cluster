@@ -29,3 +29,11 @@ All modules are published under Apache License Version 2.0.
 ## About
 
 A [marbot.io](https://marbot.io/) project. Engineered by [widdix](https://widdix.net).
+
+## Future Improvements
+
+1. Currently a threshold value is used and applied to all similar kind of alarms, implement something to override that default value for some specific resource.
+2. Added Other Alarms as well, use metrics like :
+   - DB Connections
+   - Read & Write IOPS
+   - NetworkReceiveThroughput & NetworkTransmitThroughput
