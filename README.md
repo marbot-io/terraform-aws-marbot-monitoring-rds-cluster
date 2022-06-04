@@ -15,7 +15,7 @@ Connects you to RDS Event Notifications of a particular RDS cluster or Instance,
 3. Initialize the terraform project with `terraform init` in your current directory.
 4. Apply the terraform configuration to provision resources - `terraform apply -var-file production.tfvars`
 
-## Environment Variables :
+## Input Variables for Terraform:
 
 1. **endpoint_id** = the **Marbot** endpoint ID
    - How to get the endpoint ID : Follow this guide : https://marbot.io/help/setup-marbot.html
