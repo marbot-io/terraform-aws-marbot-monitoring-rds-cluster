@@ -45,31 +45,43 @@ variable "burst_monitoring_enabled" {
 variable "cpu_credit_balance_threshold" {
   type        = number
   description = "The minimum number of CPU credits available (t* instances only; set to -1 to disable)."
-  default     = 20
+  default     = 100
 }
 
 variable "freeable_memory_threshold" {
   type        = number
   description = "The minimum amount of available random access memory in Byte (set to -1 to disable)."
-  default     = 64000000 # 64 Megabyte in Byte
+  default     = 2000000000 # 2 GBs in Byte
 }
 
 variable "read_latency_threshold" {
   type        = number
   description = "The maximum amount of latency to allow for data read"
-  default     = 0.15 # 150 ms in seconds
+  default     = 0.004 # 2 ms in seconds
 }
 
 variable "write_latency_threshold" {
   type        = number
   description = "The maximum amount of latency to allow for data write"
-  default     = 0.15 # 150 ms in seconds
+  default     = 0.004 # 3 ms in seconds
 }
 
 variable "available_storage_threshold" {
   type        = number
   description = "The minimum amount of available storage in Byte."
-  default     = 10000000000 # 64 Megabyte in Byte
+  default     = 10000000000 # 10 GBs in Byte
+}
+
+variable "aurora_replication_lag_maximum" {
+  type        = number
+  description = "The maximum amount of lag in milliseconds between the primary instance and each Aurora DB instance in the DB cluster." # for Cluster
+  default     = 500
+}
+
+variable "aurora_replication_lag" {
+  type        = number
+  description = "For an Aurora replica, the in milliseconds amount of lag when replicating updates from the primary instance."
+  default     = 500
 }
 
 #! Extra
