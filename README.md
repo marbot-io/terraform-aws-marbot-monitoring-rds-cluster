@@ -22,6 +22,18 @@ Connects you to RDS Event Notifications of a particular RDS cluster or Instance,
 2. **db_clusters_identifier_list** : List of all the DB clusters for which you want to create CloudWatch Alarms, example: **["DB-Cluster-1", "DB-Cluster-2", "DB-Cluster-3"]**
 3. **db_instances_identifier_list** : List of all the DB Instances for which you want to create CloudWatch Alarms, example: **["DB-Instance-1", "DB-Instance-2", "DB-Instance-3"]**
 
+#### AWS CLI Command for getting all RDS Instances
+
+```
+aws rds describe-db-clusters --query "DBClusters[].DBClusterIdentifier" | tr -d '\n' | tr -d '  '
+```
+
+#### AWS CLI Command for getting all RDS Instances
+
+```
+aws rds describe-db-instances  --query 'DBInstances[?StorageType != `aurora`].DBInstanceIdentifier' | tr -d '\n' | tr -d '  '
+```
+
 ## License
 
 All modules are published under Apache License Version 2.0.
