@@ -57,13 +57,13 @@ variable "freeable_memory_threshold" {
 variable "read_latency_threshold" {
   type        = number
   description = "The maximum amount of latency to allow for data read"
-  default     = 0.002 # 2 ms in seconds
+  default     = 0.003 # 2 ms in seconds
 }
 
 variable "write_latency_threshold" {
   type        = number
   description = "The maximum amount of latency to allow for data write"
-  default     = 0.002 # 150 ms in seconds
+  default     = 0.003 # 3 ms in seconds
 }
 
 variable "available_storage_threshold" {
