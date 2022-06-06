@@ -88,7 +88,7 @@ resource "aws_cloudwatch_metric_alarm" "cluster_read_latency" {
   namespace           = "AWS/RDS"
   metric_name         = "ReadLatency"
   statistic           = "Average"
-  period              = 600
+  period              = 60
   evaluation_periods  = 1
   comparison_operator = "GreaterThanThreshold"
   threshold           = var.read_latency_threshold
@@ -111,7 +111,7 @@ resource "aws_cloudwatch_metric_alarm" "cluster_write_latency" {
   namespace           = "AWS/RDS"
   metric_name         = "WriteLatency"
   statistic           = "Average"
-  period              = 600
+  period              = 60
   evaluation_periods  = 1
   comparison_operator = "GreaterThanThreshold"
   threshold           = var.write_latency_threshold
@@ -213,7 +213,7 @@ resource "aws_cloudwatch_metric_alarm" "instance_read_latency" {
   namespace           = "AWS/RDS"
   metric_name         = "ReadLatency"
   statistic           = "Average"
-  period              = 600
+  period              = 60
   evaluation_periods  = 1
   comparison_operator = "GreaterThanThreshold"
   threshold           = var.read_latency_threshold
@@ -236,7 +236,7 @@ resource "aws_cloudwatch_metric_alarm" "instance_write_latency" {
   namespace           = "AWS/RDS"
   metric_name         = "WriteLatency"
   statistic           = "Average"
-  period              = 600
+  period              = 60
   evaluation_periods  = 1
   comparison_operator = "GreaterThanThreshold"
   threshold           = var.write_latency_threshold
