@@ -72,6 +72,18 @@ variable "available_storage_threshold" {
   default     = 10000000000 # 10 GBs in Byte
 }
 
+variable "aurora_replication_lag_maximum" {
+  type        = number
+  description = "The maximum amount of lag in milliseconds between the primary instance and each Aurora DB instance in the DB cluster." # for Cluster
+  default     = 500
+}
+
+variable "aurora_replication_lag" {
+  type        = number
+  description = "For an Aurora replica, the in milliseconds amount of lag when replicating updates from the primary instance."
+  default     = 500
+}
+
 #! Extra
 variable "tags" {
   description = "A map of tags to add to all resources"
