@@ -146,6 +146,29 @@ resource "aws_cloudwatch_metric_alarm" "cluster_replication_lag_maximum" {
   tags               = var.tags
 }
 
+resource "aws_cloudwatch_metric_alarm" "cluster_db_connections" {
+  depends_on = [aws_sns_topic_subscription.marbot]
+  count      = var.enabled ? length(var.db_clusters_identifier_list) : 0
+
+  alarm_name          = "marbot-${element(var.db_clusters_identifier_list, count.index)}-rds-cluster-db-connection-count"
+  alarm_description   = "The number of client network connections to the database cluster is higher than the specified value, please check."
+  namespace           = "AWS/RDS"
+  metric_name         = "DatabaseConnections"
+  statistic           = "Average"
+  period              = 60
+  evaluation_periods  = 1
+  comparison_operator = "GreaterThanThreshold"
+  threshold           = var.cluster_db_connection_count
+  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
+  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  dimensions = {
+    DBClusterIdentifier = element(var.db_clusters_identifier_list, count.index)
+  }
+  treat_missing_data = "notBreaching"
+  tags               = var.tags
+}
+
+
 
 
 
@@ -306,6 +329,28 @@ resource "aws_cloudwatch_metric_alarm" "read_replica_instance_replication_lag" {
   evaluation_periods  = 1
   comparison_operator = "GreaterThanThreshold"
   threshold           = var.aurora_replication_lag
+  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
+  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  dimensions = {
+    DBInstanceIdentifier = element(var.db_instances_identifier_list, count.index)
+  }
+  treat_missing_data = "notBreaching"
+  tags               = var.tags
+}
+
+resource "aws_cloudwatch_metric_alarm" "instance_db_connections" {
+  depends_on = [aws_sns_topic_subscription.marbot]
+  count      = var.enabled ? length(var.db_instances_identifier_list) : 0
+
+  alarm_name          = "marbot-${element(var.db_instances_identifier_list, count.index)}-rds-instance-db-connection-count"
+  alarm_description   = "The number of client network connections to the database instance is higher than the specified value, please check."
+  namespace           = "AWS/RDS"
+  metric_name         = "DatabaseConnections"
+  statistic           = "Average"
+  period              = 60
+  evaluation_periods  = 1
+  comparison_operator = "GreaterThanThreshold"
+  threshold           = var.instance_db_connection_count
   alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
   ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
   dimensions = {

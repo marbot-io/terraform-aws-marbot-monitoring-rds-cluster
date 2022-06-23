@@ -84,6 +84,18 @@ variable "aurora_replication_lag" {
   default     = 500
 }
 
+variable "cluster_db_connection_count" {
+  type        = number
+  description = "The number of client network connections to the database cluster."
+  default     = 350
+}
+
+variable "instance_db_connection_count" {
+  type        = number
+  description = "The number of client network connections to the database instance."
+  default     = 350
+}
+
 #! Extra
 variable "tags" {
   description = "A map of tags to add to all resources"
