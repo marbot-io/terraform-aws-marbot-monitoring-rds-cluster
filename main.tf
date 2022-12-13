@@ -113,7 +113,7 @@ resource "aws_cloudwatch_event_target" "monitoring_jump_start_connection" {
 {
   "Type": "monitoring-jump-start-tf-connection",
   "Module": "rds-cluster",
-  "Version": "0.7.3",
+  "Version": "0.8.0",
   "Partition": "${data.aws_partition.current.partition}",
   "AccountId": "${data.aws_caller_identity.current.account_id}",
   "Region": "${data.aws_region.current.name}"
@@ -213,6 +213,7 @@ resource "aws_db_event_subscription" "rds_cluster_issue" {
   depends_on = [aws_sns_topic_subscription.marbot]
   count      = var.enabled ? 1 : 0
 
+  name_prefix = "marbot"
   sns_topic   = join("", aws_sns_topic.marbot.*.arn)
   source_type = "db-cluster"
   source_ids  = [var.db_cluster_identifier]
