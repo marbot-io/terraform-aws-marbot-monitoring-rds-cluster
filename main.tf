@@ -12,6 +12,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+locals {
+  topic_arn = var.create_topic == false ? var.topic_arn : join("", aws_sns_topic.marbot.*.arn)
+}
+
 ##########################################################################
 #                                                                        #
 #                                 TOPIC                                  #
@@ -19,14 +23,14 @@ data "aws_region" "current" {}
 ##########################################################################
 
 resource "aws_sns_topic" "marbot" {
-  count = var.enabled ? 1 : 0
+  count = (var.create_topic && var.enabled) ? 1 : 0
 
   name_prefix = "marbot"
   tags        = var.tags
 }
 
 resource "aws_sns_topic_policy" "marbot" {
-  count = var.enabled ? 1 : 0
+  count = (var.create_topic && var.enabled) ? 1 : 0
 
   arn    = join("", aws_sns_topic.marbot.*.arn)
   policy = data.aws_iam_policy_document.topic_policy.json
@@ -69,7 +73,7 @@ data "aws_iam_policy_document" "topic_policy" {
 
 resource "aws_sns_topic_subscription" "marbot" {
   depends_on = [aws_sns_topic_policy.marbot]
-  count      = var.enabled ? 1 : 0
+  count      = (var.create_topic && var.enabled) ? 1 : 0
 
   topic_arn              = join("", aws_sns_topic.marbot.*.arn)
   protocol               = "https"
@@ -108,12 +112,12 @@ resource "aws_cloudwatch_event_target" "monitoring_jump_start_connection" {
 
   rule      = join("", aws_cloudwatch_event_rule.monitoring_jump_start_connection.*.name)
   target_id = "marbot"
-  arn       = join("", aws_sns_topic.marbot.*.arn)
+  arn       = local.topic_arn
   input     = <<JSON
 {
   "Type": "monitoring-jump-start-tf-connection",
   "Module": "rds-cluster",
-  "Version": "0.8.0",
+  "Version": "0.9.0",
   "Partition": "${data.aws_partition.current.partition}",
   "AccountId": "${data.aws_caller_identity.current.account_id}",
   "Region": "${data.aws_region.current.name}"
@@ -146,8 +150,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   evaluation_periods  = 1
   comparison_operator = "GreaterThanThreshold"
   threshold           = var.cpu_utilization_threshold
-  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
-  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  alarm_actions       = [local.topic_arn]
+  ok_actions          = [local.topic_arn]
   dimensions = {
     DBClusterIdentifier = var.db_cluster_identifier
   }
@@ -170,8 +174,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu_credit_balance" {
   evaluation_periods  = 1
   comparison_operator = "LessThanThreshold"
   threshold           = var.cpu_credit_balance_threshold
-  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
-  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  alarm_actions       = [local.topic_arn]
+  ok_actions          = [local.topic_arn]
   dimensions = {
     DBClusterIdentifier = var.db_cluster_identifier
   }
@@ -194,8 +198,8 @@ resource "aws_cloudwatch_metric_alarm" "freeable_memory" {
   evaluation_periods  = 1
   comparison_operator = "LessThanThreshold"
   threshold           = var.freeable_memory_threshold
-  alarm_actions       = [join("", aws_sns_topic.marbot.*.arn)]
-  ok_actions          = [join("", aws_sns_topic.marbot.*.arn)]
+  alarm_actions       = [local.topic_arn]
+  ok_actions          = [local.topic_arn]
   dimensions = {
     DBClusterIdentifier = var.db_cluster_identifier
   }
@@ -214,7 +218,7 @@ resource "aws_db_event_subscription" "rds_cluster_issue" {
   count      = var.enabled ? 1 : 0
 
   name_prefix = "marbot"
-  sns_topic   = join("", aws_sns_topic.marbot.*.arn)
+  sns_topic   = local.topic_arn
   source_type = "db-cluster"
   source_ids  = [var.db_cluster_identifier]
   tags        = var.tags
