@@ -29,16 +29,16 @@ You can also configure this module by tagging the RDS cluster (requires v1.0.0 o
 
 | tag key                                        | default value                                    | allowed values                                |
 | ---------------------------------------------- | ------------------------------------------------ | ----------------------------------------------|
-| `marbot`                                       | on                                               | on|off                                        |
-| `marbot:cpu-utilization`                       | variable `cpu_utilization`                       | static|off                                    |
+| `marbot`                                       | on                                               | on,off                                        |
+| `marbot:cpu-utilization`                       | variable `cpu_utilization`                       | static,off                                    |
 | `marbot:cpu-utilization:threshold`             | variable `cpu_utilization_threshold`             | 0-100                                         |
 | `marbot:cpu-utilization:period`                | variable `cpu_utilization_period`                | <= 86400 and multiple of 60                   |
 | `marbot:cpu-utilization:evaluation-periods`    | variable `cpu_utilization_evaluation_periods`    | >= 1 and $period*$evaluation-periods <= 86400 |
-| `marbot:cpu-credit-balance`                    | variable `cpu_credit_balance`                    | static|off                                    |
+| `marbot:cpu-credit-balance`                    | variable `cpu_credit_balance`                    | static,off                                    |
 | `marbot:cpu-credit-balance:threshold`          | variable `cpu_credit_balance_threshold`          | >= 0                                          |
 | `marbot:cpu-credit-balance:period`             | variable `cpu_credit_balance_period`             | <= 86400 and multiple of 60                   |
 | `marbot:cpu-credit-balance:evaluation-periods` | variable `cpu_credit_balance_evaluation_periods` | >= 1 and $period*$evaluation-periods <= 86400 |
-| `marbot:freeable-memory`                       | variable `freeable_memory`                       | static|off                                    |
+| `marbot:freeable-memory`                       | variable `freeable_memory`                       | static,off                                    |
 | `marbot:freeable-memory:threshold`             | variable `freeable_memory_threshold`             | >= 0                                          |
 | `marbot:freeable-memory:period`                | variable `freeable_memory_period`                | <= 86400 and multiple of 60                   |
 | `marbot:freeable-memory:evaluation-periods`    | variable `freeable_memory_evaluation_periods`    | >= 1 and $period*$evaluation-periods <= 86400 |
