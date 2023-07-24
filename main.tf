@@ -1,8 +1,14 @@
 terraform {
   required_version = ">= 0.12.0"
   required_providers {
-    aws    = ">= 2.48.0"
-    random = ">= 2.2"
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 2.48.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 2.2"
+    }
   }
 }
 
@@ -17,7 +23,7 @@ data "aws_rds_cluster" "cluster" {
 }
 
 locals {
-  topic_arn = var.create_topic == false ? var.topic_arn : join("", aws_sns_topic.marbot.*.arn)
+  topic_arn = var.create_topic == false ? var.topic_arn : join("", aws_sns_topic.marbot[*].arn)
   enabled   = var.enabled && lookup(data.aws_rds_cluster.cluster.tags, "marbot", "on") != "off"
 
   cpu_utilization                        = lookup(data.aws_rds_cluster.cluster.tags, "marbot:cpu-utilization", var.cpu_utilization)
@@ -58,7 +64,7 @@ resource "aws_sns_topic" "marbot" {
 resource "aws_sns_topic_policy" "marbot" {
   count = (var.create_topic && var.enabled) ? 1 : 0
 
-  arn    = join("", aws_sns_topic.marbot.*.arn)
+  arn    = join("", aws_sns_topic.marbot[*].arn)
   policy = data.aws_iam_policy_document.topic_policy.json
 }
 
@@ -67,7 +73,7 @@ data "aws_iam_policy_document" "topic_policy" {
     sid       = "Sid1"
     effect    = "Allow"
     actions   = ["sns:Publish"]
-    resources = [join("", aws_sns_topic.marbot.*.arn)]
+    resources = [join("", aws_sns_topic.marbot[*].arn)]
 
     principals {
       type = "Service"
@@ -82,7 +88,7 @@ data "aws_iam_policy_document" "topic_policy" {
     sid       = "Sid2"
     effect    = "Allow"
     actions   = ["sns:Publish"]
-    resources = [join("", aws_sns_topic.marbot.*.arn)]
+    resources = [join("", aws_sns_topic.marbot[*].arn)]
 
     principals {
       type        = "AWS"
@@ -101,7 +107,7 @@ resource "aws_sns_topic_subscription" "marbot" {
   depends_on = [aws_sns_topic_policy.marbot]
   count      = (var.create_topic && local.enabled) ? 1 : 0
 
-  topic_arn              = join("", aws_sns_topic.marbot.*.arn)
+  topic_arn              = join("", aws_sns_topic.marbot[*].arn)
   protocol               = "https"
   endpoint               = "https://api.marbot.io/${var.stage}/endpoint/${var.endpoint_id}"
   endpoint_auto_confirms = true
@@ -136,7 +142,7 @@ resource "aws_cloudwatch_event_rule" "monitoring_jump_start_connection" {
 resource "aws_cloudwatch_event_target" "monitoring_jump_start_connection" {
   count = (var.module_version_monitoring_enabled && local.enabled) ? 1 : 0
 
-  rule      = join("", aws_cloudwatch_event_rule.monitoring_jump_start_connection.*.name)
+  rule      = join("", aws_cloudwatch_event_rule.monitoring_jump_start_connection[*].name)
   target_id = "marbot"
   arn       = local.topic_arn
   input     = <<JSON
